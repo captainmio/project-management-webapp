@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { errorNotification } from "./ui/notification";
+import { Loader2Icon } from "lucide-react";
 
 export type submitData = {
   name: string;
@@ -33,6 +34,8 @@ const Signup2 = ({
     confirmPassword: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev: typeof formData) => ({
@@ -42,16 +45,20 @@ const Signup2 = ({
   };
 
   const handleSignup = async (e: React.FormEvent) => {
+    setLoading(true);
     e.preventDefault();
     const { name, email, password, confirmPassword } = formData;
 
     // validate that password and confirmPassword match
     if (password !== confirmPassword) {
       errorNotification("Passwords do not match");
-      return;
     }
 
-    submit({ name, email, password });
+    // these just to add some delay to the form submission
+    setTimeout(() => {
+      submit({ name, email, password });
+      setLoading(false);
+    }, 1000);
   };
 
   return (
@@ -108,9 +115,16 @@ const Signup2 = ({
                   required
                 />
               </div>
+              {loading ? (
+              <Button disabled className="w-full cursor-pointer">
+                <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                Please wait
+              </Button>
+            ) : (
               <Button type="submit" className="w-full cursor-pointer">
                 {buttonText}
               </Button>
+            )}
             </form>
           </div>
           <div className="text-muted-foreground flex justify-center gap-1 text-sm">
