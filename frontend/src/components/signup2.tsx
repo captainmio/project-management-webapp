@@ -1,15 +1,17 @@
+import { signUp } from "@/api/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { Bounce, toast } from "react-toastify";
 
+export type submitData = {
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
 interface Signup2Props {
   heading?: string;
-  logo: {
-    url: string;
-    src: string;
-    alt: string;
-    title?: string;
-  };
   buttonText?: string;
   googleText?: string;
   signupText?: string;
@@ -18,52 +20,110 @@ interface Signup2Props {
 
 const Signup2 = ({
   heading = "Signup",
-  logo = {
-    url: "https://www.shadcnblocks.com",
-    src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-wordmark.svg",
-    alt: "logo",
-    title: "shadcnblocks.com",
-  },
   buttonText = "Create Account",
   signupText = "Already a user?",
   signupUrl = "/",
 }: Signup2Props) => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev: typeof formData) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const { name, email, password, confirmPassword } = formData;
+
+    // validate that password and confirmPassword match
+    if (password !== confirmPassword) {
+      toast.error('Password not match', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      return;
+    }
+
+    const result = await signUp(email, password)
+
+    console.log("Signup Result:", result);
+
+    console.log("Form Data:", { name, email, password, confirmPassword });
+  };
+
   return (
     <section className="bg-muted h-screen">
       <div className="flex h-full items-center justify-center">
         <div className="flex flex-col items-center gap-6 lg:justify-start">
           <div className="min-w-sm border-muted bg-background flex w-full max-w-sm flex-col items-center gap-y-4 rounded-md border px-6 py-8 shadow-md">
             {heading && <h1 className="text-xl font-semibold">{heading}</h1>}
-            <div className="flex w-full flex-col gap-2">
-              <Label>Email</Label>
-              <Input
-                type="email"
-                placeholder="Email"
-                className="text-sm"
-                required
-              />
-            </div>
-            <div className="flex w-full flex-col gap-2">
-              <Label>Password</Label>
-              <Input
-                type="password"
-                placeholder="Password"
-                className="text-sm"
-                required
-              />
-            </div>
-            <div className="flex w-full flex-col gap-2">
-              <Label>Confirm Password</Label>
-              <Input
-                type="password"
-                placeholder="Password"
-                className="text-sm"
-                required
-              />
-            </div>
-            <Button type="submit" className="w-full">
-              {buttonText}
-            </Button>
+            <form onSubmit={handleSignup} className="w-full">
+              <div className="flex w-full flex-col gap-2">
+                <Label>Name</Label>
+                <Input
+                  type="text"
+                  name="name"
+                  className="text-sm"
+                  onChange={handleChange}
+                  value={formData.name}
+                  required
+                />
+              </div>
+              <div className="flex w-full flex-col gap-2 pt-3">
+                <Label>Email</Label>
+                <Input
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  className="text-sm"
+                  onChange={handleChange}
+                  value={formData.email}
+                  required
+                />
+              </div>
+              <div className="flex w-full flex-col gap-2 pt-3">
+                <Label>Password</Label>
+                <Input
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  className="text-sm"
+                  onChange={handleChange}
+                  value={formData.password}
+                  required
+                />
+              </div>
+              <div className="flex w-full flex-col gap-2 pt-3 pb-7">
+                <Label>Confirm Password</Label>
+                <Input
+                  type="password"
+                  name="confirmPassword"
+                  placeholder="Password"
+                  className="text-sm"
+                  onChange={handleChange}
+                  value={formData.confirmPassword}
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full cursor-pointer">
+                {buttonText}
+              </Button>
+            </form>
           </div>
           <div className="text-muted-foreground flex justify-center gap-1 text-sm">
             <p>{signupText}</p>
@@ -80,4 +140,4 @@ const Signup2 = ({
   );
 };
 
-export { Signup2 };
+export {Signup2};
