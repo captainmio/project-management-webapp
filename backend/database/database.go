@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/captainmio/project-management-app/backend/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -17,6 +18,8 @@ func ConnectToDatabase() {
 	if err != nil {
 		panic("failed to connect to database")
 	}
+
+	DB.AutoMigrate(&models.User{})
 
 	log.Println("============= Connected to the database successfully =============")
 }

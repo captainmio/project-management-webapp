@@ -1,12 +1,19 @@
 import { signUp } from "@/api/auth";
 import { Signup2, type submitData } from "@/components/signup2";
+import { errorNotification, successNotification } from "@/components/ui/notification";
 
 
 const Signup = () => {
 
   const handleSignup = async ({name, email, password} : submitData) => {
     const result = await signUp(name, email, password)
-    console.log("Signup Result:", result);
+
+    console.log(result)
+    if(!result.success) {
+      errorNotification(result.message || "Signup failed");
+    } else {
+      successNotification("Signup successful!");
+    }
   };
 
 

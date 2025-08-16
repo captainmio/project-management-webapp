@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { Bounce, toast } from "react-toastify";
+import { errorNotification } from "./ui/notification";
 
 export type submitData = {
   name: string;
@@ -47,17 +47,7 @@ const Signup2 = ({
 
     // validate that password and confirmPassword match
     if (password !== confirmPassword) {
-      toast.error('Password not match', {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
+      errorNotification("Passwords do not match");
       return;
     }
 

@@ -1,6 +1,6 @@
 import { apiBase } from "./base";
 
-export const signUp = async (name: string, email: string, password: string): Promise<void> => {
+export const signUp = async (name: string, email: string, password: string): Promise<T> => {
   const response = await fetch(`${apiBase}/api/auth/sign-up`, {
     method: 'POST',
     headers: {
@@ -9,9 +9,7 @@ export const signUp = async (name: string, email: string, password: string): Pro
     body: JSON.stringify({ name, email, password }),
   });
 
-  if (!response.ok) {
-    throw new Error('Failed to sign up');
-  }
+  const data = await response.json();
 
-  return response.json();
+  return data
 }
