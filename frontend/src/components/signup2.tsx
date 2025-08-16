@@ -1,4 +1,3 @@
-import { signUp } from "@/api/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -6,9 +5,10 @@ import { useState } from "react";
 import { Bounce, toast } from "react-toastify";
 
 export type submitData = {
+  name: string;
   email: string;
   password: string;
-  confirmPassword: string;
+  confirmPassword?: string;
 };
 interface Signup2Props {
   heading?: string;
@@ -16,6 +16,7 @@ interface Signup2Props {
   googleText?: string;
   signupText?: string;
   signupUrl?: string;
+  onSubmit: (data: submitData) => Promise<void>;
 }
 
 const Signup2 = ({
@@ -23,6 +24,7 @@ const Signup2 = ({
   buttonText = "Create Account",
   signupText = "Already a user?",
   signupUrl = "/",
+  onSubmit: submit
 }: Signup2Props) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -59,11 +61,7 @@ const Signup2 = ({
       return;
     }
 
-    const result = await signUp(email, password)
-
-    console.log("Signup Result:", result);
-
-    console.log("Form Data:", { name, email, password, confirmPassword });
+    submit({ name, email, password });
   };
 
   return (

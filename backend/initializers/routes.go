@@ -2,7 +2,6 @@ package initializers
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"time"
@@ -10,13 +9,10 @@ import (
 	"github.com/captainmio/project-management-app/backend/controllers/auth"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 )
 
 func Routes() {
-	fmt.Println("===================================")
 	fmt.Println("======= INITIALIZING ROUTES =======")
-	fmt.Println("===================================")
 	router := gin.Default()
 
 	// Allow CORS
@@ -29,13 +25,9 @@ func Routes() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	// router.POST("/posts", authController.SignUp)
+	// AUTH api
 	router.POST("/api/auth/sign-up", auth.SignUp)
+
 	port := os.Getenv("PORT")
 
 	fmt.Println("post value:", port)
