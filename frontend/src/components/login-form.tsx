@@ -1,21 +1,58 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { Loader2Icon } from "lucide-react";
+import { useLoading } from "@/hooks/useLoading";
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+export type loginData = {
+  email: string;
+  password: string;
+};
+interface LoginFormProps {
+  className?: string;
+  onSubmit: (data: loginData) => Promise<void>;
+}
+
+export function LoginForm({ className, onSubmit }: LoginFormProps) {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const loadingState = useLoading();
+  const { loading, startLoading, stopLoading } = loadingState;
+
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev: typeof formData) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    startLoading();
+    event.preventDefault();
+
+    const { email, password } = formData;
+
+    setTimeout(() => {
+      onSubmit({ email, password });
+      stopLoading();
+    }, 1000);
+  };
+
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn("flex flex-col gap-6", className)}>
       <Card>
         <CardHeader>
           <CardTitle className="text-xl font-semibold">Login</CardTitle>
@@ -24,15 +61,17 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="test@example.com"
                   required
+                  onChange={handleChange}
                 />
               </div>
               <div className="grid gap-3">
@@ -45,18 +84,31 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  onChange={handleChange}
+                />
               </div>
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full">
-                  Login
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full cursor-pointer"
+                >
+                  {loading && (
+                    <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  {loading ? "Please wait" : "Login"}
                 </Button>
                 {/* <Button variant="outline" className="w-full">
                   Login with Google
                 </Button> */}
               </div>
             </div>
-            <div className="mt-4 text-center text-sm">
+            <div className="mt-4 text-center text-sm font-medium">
               Don&apos;t have an account?{" "}
               <a href="/sign-up" className="underline underline-offset-4">
                 Sign up
@@ -66,5 +118,5 @@ export function LoginForm({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

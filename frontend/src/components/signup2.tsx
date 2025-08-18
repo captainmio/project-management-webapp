@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { errorNotification } from "./ui/notification";
 import { Loader2Icon } from "lucide-react";
+import { useLoading } from "@/hooks/useLoading";
 
 export type submitData = {
   name: string;
@@ -34,7 +35,9 @@ const Signup2 = ({
     confirmPassword: "",
   });
 
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
+  const loadingState = useLoading();
+  const { loading, startLoading, stopLoading } = loadingState;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -45,19 +48,27 @@ const Signup2 = ({
   };
 
   const handleSignup = async (e: React.FormEvent) => {
-    setLoading(true);
+    startLoading();
     e.preventDefault();
     const { name, email, password, confirmPassword } = formData;
 
     // validate that password and confirmPassword match
     if (password !== confirmPassword) {
       errorNotification("Passwords do not match");
+      return;
     }
+
+    // validate that password and confirmPassword are more than 6 characters
+    if (password.length < 6 || confirmPassword.length < 6) {
+      errorNotification("Password must be at least 6 characters long");
+      stopLoading();
+      return;
+    } 
 
     // these just to add some delay to the form submission
     setTimeout(() => {
       submit({ name, email, password });
-      setLoading(false);
+      stopLoading();
     }, 1000);
   };
 
@@ -115,16 +126,16 @@ const Signup2 = ({
                   required
                 />
               </div>
-              {loading ? (
-              <Button disabled className="w-full cursor-pointer">
-                <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-                Please wait
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full cursor-pointer"
+              >
+                {loading && (
+                  <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                {loading ? "Please wait" : buttonText}
               </Button>
-            ) : (
-              <Button type="submit" className="w-full cursor-pointer">
-                {buttonText}
-              </Button>
-            )}
             </form>
           </div>
           <div className="text-muted-foreground flex justify-center gap-1 text-sm">
