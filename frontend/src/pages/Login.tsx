@@ -1,3 +1,4 @@
+import { login } from "@/api/auth";
 import { LoginForm, type loginData } from "@/components/login-form";
 
 export const Login = () => {
@@ -5,6 +6,10 @@ export const Login = () => {
   const handleSubmit = async ({email, password}: loginData) => {
     // Handle login logic here
     console.log("Login data submitted:", { email, password });
+
+    const result = await login(email, password);
+
+    console.log(result)
   };
 
   return (<>

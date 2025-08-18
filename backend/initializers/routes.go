@@ -27,6 +27,7 @@ func Routes() {
 
 	// AUTH api
 	router.POST("/api/auth/sign-up", auth.SignUp)
+	router.POST("/api/auth/login", auth.Login)
 
 	port := os.Getenv("PORT")
 

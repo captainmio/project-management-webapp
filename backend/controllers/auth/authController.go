@@ -61,10 +61,48 @@ func SignUp(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data":    user,
 	})
+}
+
+func Login(c *gin.Context) {
+	var requestBody struct {
+		Email    string
+		Password string
+	}
+
+	// Bind the request body to the struct
+	if err := c.BindJSON(&requestBody); err != nil {
+		c.JSON(400, gin.H{"success": false, "message": "Invalid request body"})
+		return
+	}
+
+	// Get the user from the database
+	user, err := GetUserByEmail(requestBody.Email)
+	if err != nil {
+		c.JSON(400, gin.H{"success": false, "message": "Email does not exist"})
+	}
+
+	// Verify the password
+	if err := auth.VerifyPassword(user.Password, requestBody.Password); err != nil {
+		c.JSON(400, gin.H{"success": false, "message": "Incorrect Password"})
+		return
+	}
+
+	// Generate the access token
+	token, err := auth.GenerateAccessToken(user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Error generating token"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    token,
+	})
+
 }
 
 func GetUserByEmail(email string) (*models.User, error) {
