@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"errors"
 	"os"
 	"time"
 
@@ -34,25 +35,51 @@ func VerifyPassword(hashedPassword, providedPassword string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(providedPassword))
 }
 
+func ValidateToken(tokenString string, secret []byte) (jwt.MapClaims, error) {
+	// Parse the token
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		// Validate the signing method
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("invalid token")
+		}
+		return secret, nil
+	})
+
+	if err != nil {
+		if errors.Is(err, jwt.ErrTokenExpired) {
+			return nil, errors.New("token expired")
+		}
+		return nil, errors.New("invalid token")
+	}
+
+	// Extract and validate claims
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		return claims, nil
+	}
+	return nil, errors.New("invalid token")
+}
+
 func GenerateAccessToken(user *models.User) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour)
 
 	// Create the JWT claims
 	claims := jwt.MapClaims{
-		"Subject":   user.ID,    // subject (user ID)
-		"Email":     user.Email, // custom claim
-		"ExpiresAt": jwt.NewNumericDate(expirationTime),
-		"IssuedAt":  jwt.NewNumericDate(time.Now()),
+		"sub":   user.ID,               // subject (user ID)
+		"email": user.Email,            // custom claim
+		"exp":   expirationTime.Unix(), // standard exp
+		"iat":   time.Now().Unix(),     // standard iat
 	}
 
 	// Create the token with claims
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET_KEY")))
 
-	if err != nil {
-		return "", err
+	secret := os.Getenv("JWT_SECRET_KEY")
+	if secret == "" {
+		return "", errors.New("JWT_SECRET_KEY is not set")
 	}
 
-	return tokenString, nil
+	tokenString, err := token.SignedString([]byte(secret))
+
+	return tokenString, err
 
 }

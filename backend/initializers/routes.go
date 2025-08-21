@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/captainmio/project-management-app/backend/controllers/auth"
+	"github.com/captainmio/project-management-app/backend/middleware"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -28,6 +29,14 @@ func Routes() {
 	// AUTH api
 	router.POST("/api/auth/sign-up", auth.SignUp)
 	router.POST("/api/auth/login", auth.Login)
+
+	// Protected routes
+	api := router.Group("/api", middleware.JWTAuthMiddleware())
+	{
+		api.POST("/project", func(c *gin.Context) {
+			fmt.Println("testing")
+		})
+	}
 
 	port := os.Getenv("PORT")
 

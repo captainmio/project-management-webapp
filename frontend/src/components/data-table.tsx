@@ -54,6 +54,7 @@ const DataTable = <TData, TValue>({
     <div>
       { filterColumn  && (<div className="flex items-center py-4">
         <Input
+          id="data-table-search-field"
           placeholder={`Search${filterColumnLabel ? (' ' + filterColumnLabel) : ''}`}
           value={(table.getColumn(filterColumn)?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
