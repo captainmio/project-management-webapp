@@ -4,6 +4,7 @@ import { DataTable } from "@/components/data-table"
 import { Button } from "@/components/ui/button"
 import { IconEdit } from "@tabler/icons-react"
 import { PageLayout } from "@/components/page-layout"
+import PageSheet from "@/components/page-sheet"
 
 function getData(): Project[] {
   return [
@@ -33,25 +34,21 @@ export const Page =  () => {
       title="Projects"
       actions={
         <>
-          <Sheet>
-            <SheetTrigger asChild>
+          <PageSheet
+            button={
               <Button variant="outline" size="sm" className="bg-green-700 hover:bg-green-500 text-white text-right ml-auto cursor-pointer">
                 <IconEdit /> New Project
               </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-100 p-6">
-               <SheetTitle>Are you absolutely sure?</SheetTitle>
-                 <SheetDescription>
-                   This action cannot be undone. This will permanently delete your account
-                   and remove your data from our servers.
-                 </SheetDescription>
-            </SheetContent>
-          </Sheet>
+            }
+            title="Create New Project"
+            description="Fill in the details to create a new project."
+            >
+          </PageSheet>
         </>
       }
     >
       <div className="rounded-lg border bg-white p-4 shadow-sm">
-        <DataTable columns={columns} data={data} />
+        <DataTable columns={columns} data={data} filterColumn="name" filterColumnLabel="Name"/>
       </div>
     </PageLayout>
   
