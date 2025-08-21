@@ -1,10 +1,10 @@
-import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { columns, type Project } from "./columns"
 import { DataTable } from "@/components/data-table"
 import { Button } from "@/components/ui/button"
 import { IconEdit } from "@tabler/icons-react"
 import { PageLayout } from "@/components/page-layout"
 import PageSheet from "@/components/page-sheet"
+import { ProjectForm } from "./form"
 
 function getData(): Project[] {
   return [
@@ -26,7 +26,7 @@ function getData(): Project[] {
   ]
 }
 
-export const Page =  () => {
+export const Page = () => {
   const data =  getData()
 
   return (<>
@@ -43,6 +43,7 @@ export const Page =  () => {
             title="Create New Project"
             description="Fill in the details to create a new project."
             >
+              <ProjectForm className="mt-4" />
           </PageSheet>
         </>
       }
