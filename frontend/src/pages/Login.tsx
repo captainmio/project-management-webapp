@@ -1,13 +1,28 @@
 import { login } from "@/api/auth";
 import { LoginForm, type loginData } from "@/components/login-form";
+import { errorNotification, successNotification } from "@/components/ui/notification";
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
-
+  const navigate = useNavigate();
+  
   const handleSubmit = async ({email, password}: loginData) => {
     // Handle login logic here
-    console.log("Login data submitted:", { email, password });
 
     const result = await login(email, password);
+
+    if(!result.success) {
+      errorNotification(result.message || "Signup failed");
+    } else {
+      successNotification("Signup successful!");
+
+      // redirect user to main page
+
+      // save the token in local storage
+      localStorage.setItem("token", result.data.token as string);
+
+      navigate('/main');
+    }
 
     console.log(result)
   };

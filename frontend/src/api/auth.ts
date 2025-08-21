@@ -11,6 +11,7 @@ interface SignupData {
 interface SignUpSuccessResponse {
   data: SignupData;
   success: boolean;
+  message?: string;
 }
 
 export const signUp = async (name: string, email: string, password: string): Promise<SignUpSuccessResponse> => {
@@ -28,10 +29,14 @@ export const signUp = async (name: string, email: string, password: string): Pro
 }
 
 
-
+interface LoginData {  token: string;
+  name: string;
+  email: string;
+} 
 interface LoginSuccessResponse {
-  data: unknown;
+  data: LoginData;
   success: boolean;
+  message?: string;
 }
 export const login = async (email: string, password: string): Promise<LoginSuccessResponse> => {
   const response = await fetch(`${apiBase}/api/auth/login`, {
