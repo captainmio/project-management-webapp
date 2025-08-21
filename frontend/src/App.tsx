@@ -3,7 +3,7 @@ import './App.css'
 import { Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import ProjectMain from './pages/Project/Page';
+import ProjectMain from './pages/Project/page';
 
 
 function App() {

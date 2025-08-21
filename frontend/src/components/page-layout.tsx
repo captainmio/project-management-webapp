@@ -6,7 +6,7 @@ interface PageLayoutProps {
   actions?: ReactNode
 }
 
-export function PageLayout({ title, children, actions }: PageLayoutProps) {
+const PageLayout: React.FC<PageLayoutProps> = ({ title, children, actions }): React.ReactElement => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 ">
       {/* Top Navbar */}
@@ -25,3 +25,5 @@ export function PageLayout({ title, children, actions }: PageLayoutProps) {
     </div>
   )
 }
+
+export {PageLayout}

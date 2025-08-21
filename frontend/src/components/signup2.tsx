@@ -21,13 +21,13 @@ interface Signup2Props {
   onSubmit: (data: submitData) => Promise<void>;
 }
 
-const Signup2 = ({
+const Signup2: React.FC<Signup2Props> = ({
   heading = "Signup",
   buttonText = "Create Account",
   signupText = "Already a user?",
   signupUrl = "/",
   onSubmit: submit
-}: Signup2Props) => {
+}): React.ReactElement => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",

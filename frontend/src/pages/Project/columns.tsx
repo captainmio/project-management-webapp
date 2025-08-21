@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 
 
 export type Project = {
@@ -21,11 +21,33 @@ export type Project = {
 export const columns: ColumnDef<Project>[] = [
   {
     accessorKey: "name",
-    header: "Name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="w-full justify-start"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="w-full justify-start"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Status
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
     cell: ({row}) => {
       const status: string = row.getValue("status")
       
@@ -38,7 +60,7 @@ export const columns: ColumnDef<Project>[] = [
             badgeCss = "bg-orange-400 text-black-800"
           break;
         case 'done':
-            badgeCss = "bg-blue-400 text-black-800"
+            badgeCss = "bg-green-500 text-black-800"
           break;
         default:
             badgeCss = "default text-white-800"
@@ -48,8 +70,14 @@ export const columns: ColumnDef<Project>[] = [
     }
   },
   {
-    header: "Actions",
     id: "actions",
+    header: () => {
+      return (
+        <div className="mt-3">
+          Action
+        </div>
+      )
+    },
     cell: () => {
       return (
         <div className="">

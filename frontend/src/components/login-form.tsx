@@ -22,7 +22,7 @@ interface LoginFormProps {
   onSubmit: (data: loginData) => Promise<void>;
 }
 
-export function LoginForm({ className, onSubmit }: LoginFormProps) {
+const LoginForm: React.FC<LoginFormProps> = ({ className, onSubmit }): React.ReactElement => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -120,3 +120,5 @@ export function LoginForm({ className, onSubmit }: LoginFormProps) {
     </div>
   );
 }
+
+export { LoginForm };
